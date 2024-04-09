@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button , Form , Input , message} from 'antd';
 import { Link , useNavigate } from 'react-router-dom';
 import { LoginUser } from '../apiCalls/users';
 
 const Login = () => {
-    const navigate = useNavigate();
 
 
     const onFinish = async (values) =>{
@@ -21,6 +20,15 @@ const Login = () => {
             console.log(error);
         }
     }
+
+    const navigate = useNavigate();
+
+    useEffect(()=>{
+        if(localStorage.getItem('token')){
+            navigate('/');
+        }
+    },[]);
+
   return (
     <>
     <header className="App-header">

@@ -1,15 +1,21 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getCurrentUser } from '../apiCalls/users'
 import {  useNavigate } from 'react-router-dom';
+import {message} from 'antd';
 
 const ProtectedRoute = ({children}) => {
     const navigate = useNavigate();
+    const [user,setUser] = useState(null);
+    
     const getValidUser = async () =>{
         try {
             const response =await getCurrentUser();
             console.log(response);
+            setUser(response.data);
+            
         } catch (error) {
-            console.log(error);
+            setUser(null);
+            message.error(error.message);
         }
     }
 
@@ -22,7 +28,7 @@ const ProtectedRoute = ({children}) => {
         
     },[]);
   return (
-    <div>{children}</div>
+    <div>{user && user.name}{children}</div>
   )
 }
 
