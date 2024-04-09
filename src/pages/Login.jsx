@@ -1,8 +1,25 @@
 import React from 'react';
-import { Button , Form , Input} from 'antd';
-import { Link } from 'react-router-dom';
+import { Button , Form , Input , message} from 'antd';
+import { Link , useNavigate } from 'react-router-dom';
+import { LoginUser } from '../apiCalls/users';
 
 const Login = () => {
+    const navigate = useNavigate();
+
+
+    const onFinish = async (values) =>{
+        try {
+            const response = await LoginUser(values)
+            if(response.success){
+                message.success(response.message);
+                navigate('/');
+            }else{
+                message.error(response.message);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
   return (
     <>
     <header className="App-header">
@@ -12,47 +29,50 @@ const Login = () => {
             </section>
 
             <section className="right-section">
-                <Form layout='vertical'>
-              
+               
+               
+            <Form layout="vertical" onFinish={onFinish}>
+    
+    <Form.Item
+        label="Email"
+        htmlFor="email"
+        name="email"
+        className="d-block"
+        rules={[{ required: true, message: "Email is required" }]}
+      >
+        <Input
+          id="email"
+          type="text"
+          placeholder="Enter your Email"
+        ></Input>
+      </Form.Item>
 
-                    <Form.Item 
-                    label="Email" 
-                    htmlFor='email'
-                    name='email'
-                    className='d-block'
-                    rules={[{required:true, message : 'This field is required'}]}
-                    >
-                    
-                        <Input 
-                        id='email'
-                        type='email'
-                        placeholder='Enter your email'
-                        ></Input>
-                    </Form.Item >
+      <Form.Item
+        label="Password"
+        htmlFor="password"
+        name="password"
+        className="d-block"
+        rules={[{ required: true, message: "Password is required" }]}
+      >
+        <Input
+          id="password"
+          type="password"
+          placeholder="Enter your Password"
+          
+        ></Input>
+      </Form.Item>
 
-                    <Form.Item 
-                    label="Password" 
-                    htmlFor='password'
-                    name='password'
-                    className='d-block'
-                    rules={[{required:true, message : 'This field is required'}]}
-                    >
-                    
-                        <Input 
-                        id='password'
-                        type='password'
-                        placeholder='Enter your name'
-                        ></Input>
-                    </Form.Item >
-
-                    <Form.Item  className='d-block'>
-                       <Button 
-                       type='primary' block
-                       htmlFor='submit'
-                       style={{fontSize:"1rem" , fontWeight: "600"}}
-                       >Login</Button>
-                    </Form.Item>
-                </Form>
+      <Form.Item className="d-block">
+        <Button
+          type="primary"
+          block
+          htmlType="submit"
+          style={{ fontSize: "1rem", fontWeight: "600" }}
+        >
+          Login
+        </Button>
+      </Form.Item>
+    </Form>
 
                 <div>
                     <p>New user please register? <Link to='/register'>Register here</Link></p>
