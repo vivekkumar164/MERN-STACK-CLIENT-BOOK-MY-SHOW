@@ -15,8 +15,18 @@ const MovieList = () => {
     const tableHeadings = [
         {
             title: "Poster",
-            dataIndex: ""
-        },
+            dataIndex: "poster",
+            render: (text, data) => {
+              return (
+                <img
+                  width="75"
+                  height="115"
+                  style={{ objectFit: "cover" }}
+                  src={data.poster}
+                />
+              );
+            },
+          },
         {
             title: "Movie Name",
             dataIndex: "title"
@@ -27,7 +37,10 @@ const MovieList = () => {
         },
         {
             title: "Duration",
-            dataIndex: "duration"
+            dataIndex: "duration",
+            render: (text) => {
+                return `${text} Min`;
+              },
         },
         {
             title: "Genre",
