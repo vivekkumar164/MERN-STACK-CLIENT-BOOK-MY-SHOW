@@ -1,26 +1,97 @@
-import React from 'react'
 import { Col, Modal, Row, Form, Input, Select, Button, message } from "antd";
+import TextArea from "antd/es/input/TextArea";
+import { showLoading, hideLoading } from "../../redux/loaderSlice";
+import { useDispatch } from "react-redux";
+//import { addMovie, updateMovie } from "";
+import moment from "moment";
+import { addMovie, updateMovie } from "../../apiCalls/movies";
 
-const MovieForm = ({isModalOpen}) => {
-    function onFinish(){
+// import moment from 'moment';
 
+const MovieForm = ({
+  isModalOpen,
+  setIsModalOpen,
+  selectedMovie,
+  setSelectedMovie,
+  formType,
+  getData,
+}) => {
+  const dispatch = useDispatch();
+
+  const handleChange = (value) => {
+    console.log(`selected ${value}`);
+  };
+
+  if (selectedMovie) {
+    selectedMovie.releaseDate = moment(selectedMovie.releaseDate).format(
+      "YYYY-MM-DD"
+    );
+  }
+
+  console.log("this is from Form", selectedMovie);
+
+  const onFinish = async (values) => {
+    console.log('values----->',values);
+    try {
+        dispatch(showLoading());
+        const response = await addMovie(values);
+        dispatch(hideLoading);
+        if(response.success){
+            message.success(response.message);
+        }else{
+            message.error(response.message);
+        }
+    } catch (error) {
+        message.error(error.message);
     }
+    // try {
+    //   dispatch(showLoading());
+    //   let response = null;
+    //   if (formType === "add") {
+    //     response = await addMovie(values);
+    //     setSelectedMovie(null);
+    //   } else {
+    //     response = await updateMovie({ ...values, movieId: selectedMovie._id });
+    //     setSelectedMovie(null);
+    //   }
+    //   console.log(response);
+    //   if (response.success) {
+    //     getData();
+    //     message.success(response.message);
+    //     setIsModalOpen(false);
+    //   } else {
+    //     message.error(response.message);
+    //   }
+    //   dispatch(hideLoading());
+    // } catch (err) {
+    //   dispatch(hideLoading());
+    //   message.error(err.message);
+    // }
+  };
 
-    function handleCancel(){
+  // const handleOk = () => {
+  //   setIsModalOpen(false); onOk={handleOk}
+  // }
 
-    }
-    
-    function handleChange(){
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setSelectedMovie(null);
+  };
 
-    }
+  // console.log(selectedMovie);
 
   return (
-    <>
-   
-
-    <Form
+    <Modal
+      centered
+      title={formType === "add" ? "Add Movie" : "Edit Movie"}
+      open={isModalOpen}
+      onCancel={handleCancel}
+      width={800}
+    >
+      <Form
         layout="vertical"
         style={{ width: "100%" }}
+        initialValues={selectedMovie}
         onFinish={onFinish}
       >
         <Row
@@ -54,11 +125,11 @@ const MovieForm = ({isModalOpen}) => {
               className="d-block"
               rules={[{ required: true, message: "Description is required!" }]}
             >
-              {/* <TextArea
+              <TextArea
                 id="description"
                 rows="4"
                 placeholder="Enter the  description"
-              ></TextArea> */}
+              ></TextArea>
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -205,10 +276,7 @@ const MovieForm = ({isModalOpen}) => {
           </Button>
         </Form.Item>
       </Form>
-
-      
-    </>
-  )
-}
-
-export default MovieForm
+    </Modal>
+  );
+};
+export default MovieForm;

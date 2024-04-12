@@ -11,6 +11,7 @@ import { setUser } from '../redux/userSlice';
 const ProtectedRoute = ({children}) => {
 
     const {user} = useSelector((state) => state.user);
+    console.log('--------',user);
     const navigate = useNavigate();
     const dispatch = useDispatch();
  
@@ -86,7 +87,7 @@ const ProtectedRoute = ({children}) => {
         <div style={{ padding: 24, minHeight: 380, background: "#fff" }}>
             {children}
           </div>
-          
+
     </Layout>
     </>
   )

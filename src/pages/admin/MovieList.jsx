@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, Button } from 'antd'
 import MovieForm from './MovieForm';
+import { useDispatch } from "react-redux";
+import { hideLoading, showLoading } from '../../redux/loaderSlice';
+import { getAllMovies } from '../../apiCalls/movies';
+import moment from 'moment'
 
 const MovieList = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,7 +19,7 @@ const MovieList = () => {
         },
         {
             title: "Movie Name",
-            dataIndex: "name"
+            dataIndex: "title"
         },
         {
             title: "Description",
@@ -35,21 +39,49 @@ const MovieList = () => {
         },
         {
             title: "Release Date",
-            dataIndex: "releaseDate"
+            dataIndex: "releaseDate",
+            render: (text, data) => {
+                return moment(data.releaseDate).format("MM-DD-YYYY");
+              },
         },
         {
             title: "Action",
             dataIndex: ""
         },
     ];
+    const dispatch = useDispatch();
+
+    const getData = async () => {
+        dispatch(showLoading());
+    
+        const response = await getAllMovies();
+    
+        const allMovies = response.data;
+    
+        setMovies(
+          allMovies.map(function (item) {
+            return { ...item, key: `movie${item._id}` };
+          })
+        );
+        console.log(movies);
+        dispatch(hideLoading());
+      };
+
+      useEffect(()=>{
+        getData();
+      },[]);
     return (
         <>
             <div className='d-flex justify-content-end'>
                 <Button onClick={()=>{setIsModalOpen(true)}}>Add Movie</Button>
             </div>
 
-            <Table columns={tableHeadings} />
-            {isModalOpen && <MovieForm open={isModalOpen}/>}
+            <Table dataSource={movies} columns={tableHeadings} />
+            {isModalOpen && (
+            <MovieForm 
+            isModalOpen={isModalOpen}
+            setIsModalOpen={setIsModalOpen}/>
+        )}
         </>
     )
 }
