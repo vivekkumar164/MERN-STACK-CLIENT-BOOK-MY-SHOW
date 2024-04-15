@@ -31,42 +31,42 @@ const MovieForm = ({
   console.log("this is from Form", selectedMovie);
 
   const onFinish = async (values) => {
-    console.log('values----->',values);
-    try {
-        dispatch(showLoading());
-        const response = await addMovie(values);
-        dispatch(hideLoading);
-        if(response.success){
-            message.success(response.message);
-        }else{
-            message.error(response.message);
-        }
-    } catch (error) {
-        message.error(error.message);
-    }
+    // console.log('values----->',values);
     // try {
-    //   dispatch(showLoading());
-    //   let response = null;
-    //   if (formType === "add") {
-    //     response = await addMovie(values);
-    //     setSelectedMovie(null);
-    //   } else {
-    //     response = await updateMovie({ ...values, movieId: selectedMovie._id });
-    //     setSelectedMovie(null);
-    //   }
-    //   console.log(response);
-    //   if (response.success) {
-    //     getData();
-    //     message.success(response.message);
-    //     setIsModalOpen(false);
-    //   } else {
-    //     message.error(response.message);
-    //   }
-    //   dispatch(hideLoading());
-    // } catch (err) {
-    //   dispatch(hideLoading());
-    //   message.error(err.message);
+    //     dispatch(showLoading());
+    //     const response = await addMovie(values);
+    //     dispatch(hideLoading);
+    //     if(response.success){
+    //         message.success(response.message);
+    //     }else{
+    //         message.error(response.message);
+    //     }
+    // } catch (error) {
+    //     message.error(error.message);
     // }
+    try {
+      dispatch(showLoading());
+      let response = null;
+      if (formType === "add") {
+        response = await addMovie(values);
+        setSelectedMovie(null);
+      } else {
+        response = await updateMovie({ ...values, movieId: selectedMovie._id });
+        setSelectedMovie(null);
+      }
+      console.log(response);
+      if (response.success) {
+        getData();
+        message.success(response.message);
+        setIsModalOpen(false);
+      } else {
+        message.error(response.message);
+      }
+      dispatch(hideLoading());
+    } catch (err) {
+      dispatch(hideLoading());
+      message.error(err.message);
+    }
   };
 
   // const handleOk = () => {
