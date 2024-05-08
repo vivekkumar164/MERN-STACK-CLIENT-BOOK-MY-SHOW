@@ -20,7 +20,7 @@ export const LoginUser = async(value) =>{
 
 //get current user from frontend
 
-export const getCurrentUser = async() =>{
+export const GetCurrentUser  = async() =>{
 try {
     const response = await axiosInstance.get('api/users/get-current-user');
     return response.data;

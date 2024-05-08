@@ -1,7 +1,7 @@
 import React from 'react';
 import {Tabs} from 'antd'
 import MovieList from './MovieList';
-import TheatreTable from './TheatreTable';
+import TheatresTable from './TheatresTable';
 import MovieForm from './MovieForm';
 
 
@@ -17,7 +17,7 @@ const Admin = () => {
         {
            key : '2',
            label : 'Theatres',
-           children : <TheatreTable />
+           children : <TheatresTable />
         }
     ]
   return (

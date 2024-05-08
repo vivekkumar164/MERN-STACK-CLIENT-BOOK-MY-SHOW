@@ -1,96 +1,113 @@
-import React, { useEffect, useState } from 'react'
-import { getCurrentUser } from '../apiCalls/users'
-import {  Link, useNavigate } from 'react-router-dom';
-import {message , Layout , Menu} from 'antd';
-import { hideLoading, showLoading } from '../redux/loaderSlice';
-import {useDispatch , useSelector} from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { GetCurrentUser } from "../apiCalls/users";
+import { useNavigate } from "react-router-dom";
+import { message, Layout, Menu } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { hideLoading, showLoading } from "../redux/loaderSlice";
 import { Header } from "antd/es/layout/layout";
-import {HomeOutlined , UserOutlined , ProfileOutlined , LogoutOutlined } from '@ant-design/icons'
-import { setUser } from '../redux/userSlice';
+import {
+  HomeOutlined,
+  LogoutOutlined,
+  ProfileOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import { setUser } from "../redux/userSlice";
 
-const ProtectedRoute = ({children}) => {
+function ProtectedRoute({ children }) {
+  const { user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const {user} = useSelector((state) => state.user);
-    console.log('--------',user);
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
- 
-    const navItems = [
+  const navItems = [
+    {
+      label: "Home",
+      icon: <HomeOutlined />,
+    },
+
+    {
+      label: `${user ? user.name : ""}`,
+      icon: <UserOutlined />,
+      children: [
         {
-            label:'Home',
-            icon:<HomeOutlined />
+          label: (
+            <span
+              onClick={() => {
+                user.isAdmin ? navigate("/admin") : navigate("/profile");
+              }}
+            >
+              My Profile
+            </span>
+          ),
+          icon: <ProfileOutlined />,
         },
+
         {
-            label:`${user ? user.name : ' '}`,
-            icon:<UserOutlined />,
-            children:[
-                {
-                    label:<span onClick={()=> {user.isAdmin ? navigate('/admin') : navigate('/profile')}}>My Profile</span>,
-                    icon:<ProfileOutlined />
-                },
-                {
-                    label:<Link to='/login' onClick={()=>{localStorage.removeItem('token')}}>Log out</Link>,
-                    icon:<LogoutOutlined />
-                }
-                
-            ]
-        }
-    ];
+          label: (
+            <Link
+              to="/login"
+              onClick={() => {
+                localStorage.removeItem("token");
+              }}
+            >
+              Log Out
+            </Link>
+          ),
+          icon: <LogoutOutlined />,
+        },
+      ],
+    },
+  ];
 
-   
-
-    
-    const getValidUser = async () =>{
-        try {
-            //show loader
-            dispatch(showLoading());
-            const response =await getCurrentUser();
-            console.log(response);
-            dispatch(setUser(response.data));
-
-            //hide loader
-            dispatch(hideLoading());
-        } catch (error) {
-            dispatch(setUser(null));
-            message.error(error.message);
-        }
+  const getValidUser = async () => {
+    try {
+      dispatch(showLoading());
+      const response = await GetCurrentUser();
+      console.log(response)
+      dispatch(setUser(response.data));
+      dispatch(hideLoading());
+      // Hide Loader
+    } catch (error) {
+      dispatch(setUser(null));
+      message.error(error.message);
     }
+  };
 
-    useEffect(()=>{
-        if(localStorage.getItem('token')){
-            getValidUser();
-        }else{
-            navigate('/login');
-        }
-        
-    },[]);
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      getValidUser();
+    } else {
+      navigate("/login");
+    }
+  }, []);
+
   return (
-    // <div>{user && user.name}{children}</div>
-    <>
-    <Layout>
-        <Header
-        className="d-flex justify-content-between"
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 1,
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-        }}
-        >
-            <h3 className="demo-logo text-white m-0" style={{color:'white'}}>Book My Show</h3>
-
-            <Menu theme='dark' mode='horizontal' items={navItems} />
-        </Header>
-
-        <div style={{ padding: 24, minHeight: 380, background: "#fff" }}>
+    user && (
+      <>
+        <Layout>
+          <Header
+            className="d-flex justify-content-between"
+            style={{
+              position: "sticky",
+              top: 0,
+              zIndex: 1,
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <h3 className="demo-logo text-white m-0" style={{ color: "white" }}>
+              Book My Show
+            </h3>
+            <Menu theme="dark" mode="horizontal" items={navItems} />
+          </Header>
+          <div style={{ padding: 24, minHeight: 380, background: "#fff" }}>
             {children}
           </div>
-
-    </Layout>
-    </>
-  )
+        </Layout>
+      </>
+    )
+  );
 }
 
-export default ProtectedRoute
+export default ProtectedRoute;

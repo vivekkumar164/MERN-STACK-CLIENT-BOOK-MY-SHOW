@@ -8,6 +8,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import {useSelector} from 'react-redux';
 import Admin from './pages/admin';
 import Profile from './pages/profile';
+import SingleMovie from './pages/SingleMovie';
 
 
 function App() {
@@ -24,6 +25,8 @@ function App() {
         <Route path='/profile' element={<ProtectedRoute> <Profile /> </ProtectedRoute>} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
+
+        <Route path="/movie/:id" element={<ProtectedRoute><SingleMovie/></ProtectedRoute>} />
 
         
       </Routes>
