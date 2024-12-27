@@ -3,6 +3,7 @@ import {Tabs} from 'antd'
 import MovieList from './MovieList';
 import TheatresTable from './TheatresTable';
 import MovieForm from './MovieForm';
+import TheatreList from '../partner/TheatreList';
 
 
 const Admin = () => {

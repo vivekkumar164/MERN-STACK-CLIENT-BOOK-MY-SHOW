@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { GetCurrentUser } from "../apiCalls/users";
 import { useNavigate } from "react-router-dom";
 import { message, Layout, Menu } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { hideLoading, showLoading } from "../redux/loaderSlice";
 import { Header } from "antd/es/layout/layout";
+
 import {
   HomeOutlined,
   LogoutOutlined,
@@ -13,6 +13,7 @@ import {
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { setUser } from "../redux/userSlice";
+import { GetCurrentUser } from "../apiCalls/users";
 
 function ProtectedRoute({ children }) {
   const { user } = useSelector((state) => state.user);
@@ -23,6 +24,23 @@ function ProtectedRoute({ children }) {
     {
       label: "Home",
       icon: <HomeOutlined />,
+      children: [
+        {
+          label: (
+            <span
+            onClick={() => {
+              
+                navigate("/");
+        
+            }}
+            >
+             Home
+            </span>
+          ),
+          icon: <ProfileOutlined />,
+        },
+
+      ],
     },
 
     {
@@ -32,9 +50,15 @@ function ProtectedRoute({ children }) {
         {
           label: (
             <span
-              onClick={() => {
-                user.isAdmin ? navigate("/admin") : navigate("/profile");
-              }}
+            onClick={() => {
+              if (user.role === 'admin') {
+                navigate("/admin");
+              } else if (user.role === 'partner') {
+                navigate("/partner");
+              } else {
+                navigate("/profile");
+              }
+            }}
             >
               My Profile
             </span>

@@ -1,6 +1,7 @@
 import { Col, Modal, Row, Form,  Input, Button, message} from 'antd';
 import { showLoading, hideLoading } from '../../redux/loaderSlice';
 import { useDispatch } from 'react-redux';
+//import { addTheatre, updateTheatre } from '../../calls/theatres';
 import { addTheatre, updateTheatre } from '../../apiCalls/theatres';
 import TextArea from 'antd/es/input/TextArea';
 import { useSelector } from 'react-redux';

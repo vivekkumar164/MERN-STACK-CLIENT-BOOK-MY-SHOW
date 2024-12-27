@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, message} from 'antd';
+import TheatreFormModal from './TheatreFormModal';
+import DeleteTheatreModal from './DeleteTheatreModal';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { showLoading, hideLoading } from '../../redux/loaderSlice';
 import ShowModal from './ShowModal';
-import { getAllTheatresByMovie } from '../../apiCalls/shows';
-import TheatreFormModal from './TheatreFormModal';
-import DeleteTheatreModal from './DeleteTheatreModal';
+import { getAllTheatres } from '../../apiCalls/theatres';
+
 
 
 const TheatreList = () => {
@@ -22,7 +23,7 @@ const TheatreList = () => {
     const getData = async () => {
         try{
           dispatch(showLoading());
-          const response = await getAllTheatresByMovie({ owner: user._id });
+          const response = await getAllTheatres({ owner: user._id });
           if(response.success){
             const allTheatres = response.data;
             // console.log(allTheatres);
